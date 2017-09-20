@@ -105,9 +105,10 @@ int UIEvent::which() const
 
 void UIEvent::warnDeprecatedLayerXYUsage()
 {
-    DEFINE_STATIC_LOCAL(String, consoleMessage , ("event.layerX and event.layerY are broken and deprecated in WebKit. They will be removed from the engine in the near future."));
-    if (m_view)
-        m_view->console()->addMessage(JSMessageSource, LogMessageType, WarningMessageLevel, consoleMessage, 1, String());
+	return ;
+    //DEFINE_STATIC_LOCAL(String, consoleMessage , ("event.layerX and event.layerY are broken and deprecated in WebKit. They will be removed from the engine in the near future."));
+    //if (m_view)
+    //    m_view->console()->addMessage(JSMessageSource, LogMessageType, WarningMessageLevel, consoleMessage, 1, String());
 }
 
 PassRefPtr<FocusInEventDispatchMediator> FocusInEventDispatchMediator::create(PassRefPtr<Event> event, PassRefPtr<Node> oldFocusedNode)

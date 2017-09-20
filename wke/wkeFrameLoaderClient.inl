@@ -189,7 +189,7 @@ namespace wke
             {
                 const wkeClientHandler* handler = webView_->getClientHandler();
                 if (handler && handler->onTitleChanged)
-                    handler->onTitleChanged(handler, (const wkeString)&title.string());
+                    handler->onTitleChanged(handler->pVoid, (const wkeString)&title.string());
             }
         }
 
@@ -213,7 +213,7 @@ namespace wke
             const WebCore::ResourceRequest& request = loader->request();
             const WebCore::KURL& url = request.firstPartyForCookies();
 
-            handler->onURLChanged(handler, (const wkeString)&url.string());
+            handler->onURLChanged(handler->pVoid, (const wkeString)&url.string());
         }
 
         virtual void dispatchDidFailProvisionalLoad(const WebCore::ResourceError&) override
@@ -234,6 +234,18 @@ namespace wke
         virtual void dispatchDidFinishLoad() override
         {
             loaded_ = true;
+
+			const wkeClientHandler* handler = webView_->getClientHandler();
+			if (handler == NULL || handler->onLoadFinished == NULL)
+				return;
+
+			WebCore::DocumentLoader* loader = frame_->loader()->documentLoader();
+			if (loader == NULL)
+				return;
+
+			const WebCore::ResourceRequest& request = loader->request();
+			const WebCore::KURL& url = request.firstPartyForCookies();
+			handler->onLoadFinished(handler->pVoid, (const wkeString)&url.string(),loadFailed_);
         }
 
         virtual void dispatchDidFirstLayout() override
@@ -244,8 +256,19 @@ namespace wke
         {
         }
 
-        virtual WebCore::Frame* dispatchCreatePage(const WebCore::NavigationAction&) override
+        virtual WebCore::Frame* dispatchCreatePage(const WebCore::NavigationAction& action) override
         {
+			const wkeClientHandler* handler = webView_->getClientHandler();
+			if (handler != NULL && handler->onCreateWebView != NULL)
+			{
+				const WebCore::KURL& url = action.url();
+				bool bContinue =  handler->onCreateWebView( handler->pVoid,(const wkeString)&url.string() );
+				if (bContinue == false)
+				{
+					return NULL;
+				}
+			}
+
             return page_->mainFrame();
         }
 

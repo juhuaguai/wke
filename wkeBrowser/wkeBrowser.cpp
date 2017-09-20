@@ -95,12 +95,12 @@ jsValue JS_CALL js_setTestCount(jsExecState es)
     return jsUndefined();
 }
 
-void onTitleChanged(const wkeClientHandler*, wkeString title)
+void onTitleChanged(void* pVoid, wkeString title)
 {
     SetWindowText(hMainWnd, wkeToStringW(title));
 }
 
-void onURLChanged(const wkeClientHandler*, wkeString url)
+void onURLChanged(void* pVoid, wkeString url)
 {
     SetWindowText(hURLBarWnd, wkeToStringW(url));
 }

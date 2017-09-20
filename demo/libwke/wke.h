@@ -60,12 +60,25 @@ typedef void* jsExecState;
 typedef __int64 jsValue;
 
 typedef void* wkeString;
-typedef void (*ON_TITLE_CHANGED) (const struct _wkeClientHandler* clientHandler, const wkeString title);
-typedef void (*ON_URL_CHANGED) (const struct _wkeClientHandler* clientHandler, const wkeString url);
+typedef void (*ON_TITLE_CHANGED) (void* pVoid, const wkeString title);
+typedef void (*ON_URL_CHANGED) (void* pVoid, const wkeString url);
+typedef void (*ON_LOAD_FINISH) (void* pVoid, const wkeString url,bool bFailed);
+typedef bool (*ON_CREATE_WEBVIEW) (void* pVoid, const wkeString url);	//返回值:是否继续
 
 typedef struct _wkeClientHandler {
+	_wkeClientHandler()
+	{
+		onTitleChanged = NULL;
+		onURLChanged = NULL;
+		onLoadFinished = NULL;
+		onCreateWebView = NULL;
+		pVoid = NULL;
+	};
     ON_TITLE_CHANGED onTitleChanged;
     ON_URL_CHANGED onURLChanged;
+	ON_LOAD_FINISH onLoadFinished;
+	ON_CREATE_WEBVIEW onCreateWebView;
+	void* pVoid;
 } wkeClientHandler;
 
 /*
